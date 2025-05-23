@@ -58,6 +58,7 @@ def main():
 
         st.session_state["messages"].append(("human", message))
         st.chat_message("human").write(message)
+        logging.info(f"[Human] {message}")
 
         with st.spinner("思考中..."):
             if model_name == "deepseek-chat":
@@ -67,16 +68,7 @@ def main():
 
         st.session_state["messages"].append(("AI", response))
         st.chat_message("AI").write(response)
-
-        memories = [str(m) for m in st.session_state["messages"]]
-        memories = "\n".join(memories)
-        logging.info(
-            f"{'<' * 10}\n"
-            f"角色：{'女朋友' if gender == '男' else '男朋友'}\n"
-            f"TA的性格特征：{', '.join(bot_tags)}\n"
-            f"记忆:\n{memories}\n"
-            f"{'>' * 10}"
-        )
+        logging.info(f"[AI] {response}")
 
 
 
