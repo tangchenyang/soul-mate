@@ -78,4 +78,15 @@ def main():
         _log(f"   [AI] {response}")
 
 if __name__ == '__main__':
+    def init_logging():
+        logger = logging.getLogger()
+        formatter = logging.Formatter("%(message)s")
+        handler = logging.StreamHandler()
+        handler.setFormatter(formatter)
+        logger.handlers.clear()
+        logger.addHandler(handler)
+        logger.setLevel(logging.WARNING)
+
+
+    init_logging()
     main()
