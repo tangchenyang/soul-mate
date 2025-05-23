@@ -1,3 +1,4 @@
+import logging
 import os
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -11,7 +12,7 @@ from langchain_deepseek import ChatDeepSeek
 
 def _log(msg):
     curr_time = datetime.now(ZoneInfo('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S")
-    print(f"{curr_time} {msg}")
+    logging.warning(f"[{curr_time}] {msg}")
 
 def chat(message, histories, bot_tags, gender, api_key=None):
     os.environ["DEEPSEEK_API_KEY"] = api_key
