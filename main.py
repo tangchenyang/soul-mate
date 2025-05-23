@@ -14,7 +14,7 @@ def chat(message, histories, bot_tags, gender, api_key=None):
 
     role = "女朋友" if gender == "男" else "男朋友"
     prompt_template = ChatPromptTemplate.from_messages([
-        ("system", f"你扮演着用户的{role}, 具有如下性格特征：{', '.join(bot_tags)}"),
+        ("system", f"你扮演着用户的{role}, 具有如下性格特征：{', '.join(bot_tags)}. 生成 '~' 符号时记得加空格，避免产生错误的删除线。"),
         MessagesPlaceholder(variable_name="history"),
         ("human", "{input}")
     ])
