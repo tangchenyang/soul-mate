@@ -1,5 +1,6 @@
-import logging
 import os
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import streamlit as st
 from langchain.chains.conversation.base import ConversationChain
@@ -7,6 +8,10 @@ from langchain.memory import ConversationBufferMemory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_deepseek import ChatDeepSeek
 
+
+def _log(msg):
+    curr_time = datetime.now(ZoneInfo('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S")
+    print(f"{curr_time} {msg}")
 
 def chat(message, histories, bot_tags, gender, api_key=None):
     os.environ["DEEPSEEK_API_KEY"] = api_key
@@ -58,7 +63,7 @@ def main():
 
         st.session_state["messages"].append(("human", message))
         st.chat_message("human").write(message)
-        logging.info(f"[Human] {message}")
+
 
         with st.spinner("思考中..."):
             if model_name == "deepseek-chat":
@@ -68,23 +73,8 @@ def main():
 
         st.session_state["messages"].append(("AI", response))
         st.chat_message("AI").write(response)
-        logging.info(f"[AI] {response}")
-
-
-
-
+        _log(f"[Human] {message}")
+        _log(f"   [AI] {response}")
 
 if __name__ == '__main__':
-    def init_logging():
-        root = logging.getLogger()
-        formatter = logging.Formatter("[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s")
-        handler = logging.StreamHandler()
-        handler.setFormatter(formatter)
-        root.handlers.clear()
-        root.addHandler(handler)
-        root.setLevel(logging.INFO)
-
-
-    init_logging()
-
     main()
