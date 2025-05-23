@@ -1,3 +1,4 @@
+import logging
 import os
 
 import streamlit as st
@@ -7,20 +8,17 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_deepseek import ChatDeepSeek
 
 
-
-def chat(message, histories, bot_tags, gender,api_key=None):
+def chat(message, histories, bot_tags, gender, api_key=None):
     os.environ["DEEPSEEK_API_KEY"] = api_key
     model = ChatDeepSeek(model="deepseek-chat", temperature=0)
 
     role = "女朋友" if gender == "男" else "男朋友"
-
     prompt_template = ChatPromptTemplate.from_messages([
         ("system", f"你扮演着用户的{role}, 具有如下性格特征：{', '.join(bot_tags)}"),
         MessagesPlaceholder(variable_name="history"),
         ("human", "{input}")
     ])
     conversion_chain = ConversationChain(llm=model, memory=histories, prompt=prompt_template)
-
     response = conversion_chain.invoke(message)
     return response["response"]
 
@@ -69,7 +67,22 @@ def main():
 
         st.session_state["messages"].append(("AI", response))
         st.chat_message("AI").write(response)
+        logging.info(f"角色：{'女朋友' if gender == '男' else '男朋友'}, TA的性格特征：{', '.join(bot_tags)}")
+        logging.info(f"记忆：{st.session_state['histories']}")
 
 
 if __name__ == '__main__':
+    def init_logging():
+        print(f"Initializing logging, level: INFO")
+        root = logging.getLogger()
+        formatter = logging.Formatter("[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s")
+        handler = logging.StreamHandler()
+        handler.setFormatter(formatter)
+        root.handlers.clear()
+        root.addHandler(handler)
+        root.setLevel(logging.INFO)
+
+
+    init_logging()
+
     main()
