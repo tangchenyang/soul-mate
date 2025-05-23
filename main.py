@@ -46,6 +46,7 @@ def main():
         model_name = st.selectbox("请选择模型", ["deepseek-chat"])
         gender = st.selectbox("请选择您的性别", ["男", "女"])
         bot_tags = st.multiselect("请选择TA的性格特征", ["可爱", "温柔", "暴躁", "傲娇", "古灵精怪"], default=["可爱", "古灵精怪"])
+        customer_tags = st.text_input("自定义性格特征 (多个特征之间用空格分割)")
 
     # Body
     # session state
@@ -68,14 +69,17 @@ def main():
 
         with st.spinner("思考中..."):
             if model_name == "deepseek-chat":
+                if customer_tags:
+                    bot_tags = bot_tags + customer_tags.split()
                 response = chat(message, st.session_state["histories"], bot_tags, gender,api_key)
             else:
                 raise NotImplementedError(f"模型 {model_name} 未实现")
 
         st.session_state["messages"].append(("AI", response))
         st.chat_message("AI").write(response)
-        _log(f"[Human] {message}")
-        _log(f"   [AI] {response}")
+        _log(f"------ 角色: {'女朋友' if gender == '男' else '男朋友'} 性格: {', '.join(bot_tags)} ------")
+        _log(f"Human: {message}")
+        _log(f"   AI: {response}")
 
 if __name__ == '__main__':
     def init_logging():
