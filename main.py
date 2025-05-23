@@ -67,13 +67,24 @@ def main():
 
         st.session_state["messages"].append(("AI", response))
         st.chat_message("AI").write(response)
-        logging.info(f"角色：{'女朋友' if gender == '男' else '男朋友'}, TA的性格特征：{', '.join(bot_tags)}")
-        logging.info(f"记忆：{st.session_state['histories']}")
+
+        memories = [str(m) for m in st.session_state["messages"]]
+        memories = "\n".join(memories)
+        logging.info(
+            f"{'<' * 10}\n"
+            f"用户信息: {st.user}"
+            f"角色：{'女朋友' if gender == '男' else '男朋友'}\n"
+            f"TA的性格特征：{', '.join(bot_tags)}\n"
+            f"记忆:\n{memories}\n"
+            f"{'>' * 10}"
+        )
+
+
+
 
 
 if __name__ == '__main__':
     def init_logging():
-        print(f"Initializing logging, level: INFO")
         root = logging.getLogger()
         formatter = logging.Formatter("[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s")
         handler = logging.StreamHandler()
