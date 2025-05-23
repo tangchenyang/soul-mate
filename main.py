@@ -72,7 +72,6 @@ def main():
         memories = "\n".join(memories)
         logging.info(
             f"{'<' * 10}\n"
-            f"用户信息: {st.user}"
             f"角色：{'女朋友' if gender == '男' else '男朋友'}\n"
             f"TA的性格特征：{', '.join(bot_tags)}\n"
             f"记忆:\n{memories}\n"
